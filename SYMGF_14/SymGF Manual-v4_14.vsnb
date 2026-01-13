@@ -1,0 +1,516 @@
+{
+ "cells": [
+  {
+   "kind": 1,
+   "value": "# The  *SymGF*  manual\n\ntest drive draft ver1 2012-mar-24\n\nver2 2012-apr-03\n\nver3 2012-apr-26\n\nDear readers, please send your feedback to zimin.feng@mail.mcgill.ca\n\nThank you very much for reading!\n\n-Feng Zimin\n\n---\n## Preamble\n\n### What does  *SymGF*  do?\n\n(Original idea: Prof. Guo Hong, Physics Dept., McGill University, Montreal)\n\n *SymGF*  helps  **derive Green's functions of Anderson Models** .  *SymGF*  is a tool that we developed that help us derive Green' s functions' formulas analytically for Anderson models. Any problem that can be written in a Anderson-type Hamiltonian can in principle be solved with  *SymGF* . \n\n\n\nIn particular, we developed this tool to derive Green' s functions for quantum transport problems. When strong on-site interactions on particular devices are taken into account, deriving those formulas can be extremely tedious unless we are only interested in very crude results.  *SymGF*  is then developed to drastically reduce the amount of time needed to derive those formulas. For example,  *SymGF*  reproduced a one-year-long manual derivation by Nikolay Sergueev (2006) in one minute.\n\n### How does  *SymGF*  work?\n\nSymGF works in in three steps :\n\nTakes the model Hamiltonian as well as other user-specified requirements as inputs;\n\nDerives the equation of motion of the user-desired Green's function and all other equations of motion that are needed;\n\nAnd finally solves the equation(s) of motion to get the formula for the user-specified Green's function.\n\n### What do I need to know in order to use  *SymGF* ?\n\n *SymGF*  is developed in the belief that a good tool in theoretical physics should have zero prerequisite.\n\n\n\nAbsolutely no prerequisite is needed in order to use  *SymGF*  well. Innocent fresh new graduate students with bachelor's degrees in physics are usually smart enough to master this handy tool and you are expected to enjoy  *SymGF*  whether or not you are an expert in quantum transport.\n\n### What does this manual help me do?\n\n\"The  *SymGF*  Manual\" explains how to use  *SymGF* . In particular, it focuses on how you can setup :\n\nThe Hamiltonian;\n\nThe anti-commutation relations;\n\nThe truncation rules;\n\nAnd other inputs so that a complete SymGF run can be achieved.\n\nThis manual takes a fully operational point of view so that it is suitable for people with no relevant physics background at all.\n\n### What does this manual NOT do and how I can compensate?\n\n\"The  *SymGF*  Manual\" does NOT explain physics or algorithms it evokes.\n\n\n\nThis manual does not cover the physics of Nonequilibrium Green' s function theory applied to quantum transport theory, nor does it explains the algorithms implemented in the code. \n\n\n\nAs a matter of fact, doing that in this manual will turn out to be a total disaster, because each of those subject requires hard work to manage - far beyond the scope of this manual. There are a couple of classic textbooks  that can help you if you would like to learn about Green' s function theory and quantum transport theory, such as:\n\n **Fetter and Walecka** , Dover (2003),  *Quantum Theory of Many-Particle Systems* \n\n **Haug and Jauho** , Springer-Verlag (1996),  *Quantum Kinetics in Transport and Optics of Semiconductors* \n\n **Datta** , Cambridge (1997),  *Electronic Transport in Mesoscopic Systems* .\n\nWe will provide further documentations about the details of algorithms of SymGF and their implementation. But you can find an overview of the algorithms in this PhD thesis:\n\n **Feng** , McGill University PhD Thesis (2012),  *SymGF : A Symbolic Tool for Quantum Transport Theory* .\n\n### What's the syntactic convention of this manual?\n\nThe commands listed in this manual, if viewed in  *Mathematica*  Notebook's form (.nb file), can all be executed, just like in normal  *Mathematica*  sessions.\n\n\n\nBoth Notebook form and PDF form display the supposed corresponding outputs right beneath the commands themselves. \n\n\n\nJust like what  *Mathematica*  does, <span style=\"font-weight:Bold;font-family:Courier New\">commands or any other inputs are in the font of </span><span style=\"font-style:Italic;font-weight:Bold;font-family:Courier New\">bold Courier New</span>, <span style=\"font-family:Courier New\">and the outputs are in </span><span style=\"font-style:Italic;font-family:Courier New\">regular Courier New</span><span style=\"font-family:Courier New\">.</span>\n\nWarning messages regarding possible pitfalls are in thick boxes and are proceeded by exclamation marks.\n\nDefinitions or reminders of some less frequently encounterd concepts are in light boxes and proceeded by an \"i\" in front.\n\n### How is this manual organized?\n\nThe following sections of this manual shows how you can solve the example Hamiltonians one by one, with increasing complexity. It starts with a trivial case, then add coupling to it, then add interaction, then add extra scattering region.\n\n\n\nYou'll find exercises at the end of each section to help you gain more insights into how  *SymGF*  works.\n\n---\n## Solving the Diagonal Hamiltonian  $H=\\sum _k\\epsilon _k\\hat{a}_k^+\\hat{a}_k$ \n\n\n\n\n\nIn the case of solving the Green's function  $\\ll \\hat{a}_k\\hat{a}_{k'}^+\\gg$ \n\n\n\n of the diagonal Hamiltonian  $H=\\sum _k\\epsilon _k\\hat{a}_k^+\\hat{a}_k$ \n\n\n\n, there is actually no need to evoke  *SymGF*  for its solution, as the problem is trivial. We however present it here as the first example of how to use this tool. Basically, you need to:\n\n\n\nDownload the package\n\nStart a new  *Mathematica*  session\n\nLoad the package\n\nSet up the Hamiltonian \n\nSet up the anti-commutation relations\n\nKick start the derivation of equations of motion\n\nDisplay the results.\n\nThis section demonstrate these steps one by one.\n\n### Downloading the  *SymGF*  package file\n\nThe  *SymGF*  package file <span style=\"font-weight:Bold;font-family:Courier New\">SymGF.m</span> can be downloaded from my personal webpage free of charge: http://www.physics.mcgill.ca/~ziminf/SymGF/\n\n\n\nIn the same folder you can also find the latest version of this manual.\n\n### Starting a new  *Mathematica*  session \n\nA new  *Mathematica*  session is the session you have when you just started  *Mathematica*  without doing anything else, or when you just executed the <span style=\"font-weight:Bold;font-family:Courier New\">Quit[]</span> command. \n\n\n\nYou should be very careful not to put anything else into the same cell where <span style=\"font-weight:Bold;font-family:Courier New\">Quit[]</span> is, because once  *Mathematica*  reads that command, it terminates its kernel, so that anything after <span style=\"font-weight:Bold;font-family:Courier New\">Quit[]</span> will not be executed.\n\n\"Cell\" is a  *Mathematica*  jargon meaning a group of inputs which, when executed, all of the inputs will be executed all at once. A cell is marked by a big right-square-bracket at the right of the working window.\n\nBeginning a cell with <span style=\"font-weight:Bold;font-family:Courier New\">Quit[]</span> will leave all other commands in that cell unevaluated.\n\nIn the present version  *SymGF* 's behavior outside of a new  *Mathematica*  session is undefined.\n\nFor the moment,  *SymGF*  rely on  *Mathematica* 's function <span style=\"font-weight:Bold;font-family:Courier New\">Unique[]</span> to name the new variables that it defines. For this reason, it is preferred that  *Mathematica*  doesn’t have anything in memory, otherwise the variables' names can be very confusing. \n\n### Loading the  *SymGF*  package\n\nSuppose the user has started a new  *Mathematica*  session, then he can load the  *SymGF*  package into memory in order to use it. Supposing the package file <span style=\"font-weight:Bold;font-family:Courier New\">SymGF.m</span> is put in the folder ~/some-where/, then type:",
+   "languageId": "markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "SetDirectory[\"/Users/louis/Library/Mobile Documents/com~apple~CloudDocs/McGill/HONG/Projects/SYM-GF/mathematica/SYMGF_14/SymGF_14.m\"]",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 1,
+   "value": "You should of course replace the ~/some-where/ with the correct path in your system. \n\n\n\nPress <span style=\"font-size:16px\">&#63445;</span> + <span style=\"font-size:16px\">&#63444;</span> to execute it. If the directory is set correctly, it shows the new working directory beneath the <span style=\"font-weight:Bold;font-family:Courier New\">SetDirectory</span> command:\n\n $\\sim /some-where/$ \n\n\n\n\n\nThe whole thing then looks like:",
+   "languageId": "markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "SetDirectory[\"~/some-where/\"]",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 1,
+   "value": " $\\sim /some-where/$ \n\n\n\n\n\nThen type:",
+   "languageId": "markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "Get[\"SymGF_14.m\"]",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 1,
+   "value": "Press <span style=\"font-size:16px\">&#63445;</span> + <span style=\"font-size:16px\">&#63444;</span> to execute it. It should then shows the following information:\n\n $\\text{SymGF - Symbolic Green's Function}$ \n\n\n\n\n\n $Feng Zimin and Guo Hong\\backslash nPhysics, McGill$ \n\n\n\n\n\n $\\text{2012-April-15}$ \n\n\n\n\n\n $\\text{Please make sure that this is a new Mathematica session !!!}$ \n\n\n\n\n\n $\\text{Report bugs or comments to ziminf@physics.mcgill.ca or guo@physics.mcgill.ca}$ \n\n\n\n\n\nOnce you see that, it means  *SymGF*  is successfully loaded into memory.\n\n<span style=\"font-family:DejaVu Sans\">Pay special attention to the two \"less than\" symbols \"<<\" before</span> <span style=\"font-weight:Bold;font-family:Courier New\">SymGF.m</span><span style=\"font-family:DejaVu Sans\">, that tells </span><span style=\"font-style:Italic;font-family:DejaVu Sans\">Mathematica</span><span style=\"font-family:DejaVu Sans\"> that the file </span><span style=\"font-weight:Bold;font-family:Courier New\">SymGF.m</span><span style=\"font-family:DejaVu Sans\"> should be loaded</span>.\n\nTo put things together, they look like:",
+   "languageId": "markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "SetDirectory[\"~/some-where/\"]\nGet[\"SymGF.m\"]",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 1,
+   "value": " $\\sim /some-where/$ \n\n\n\n\n\n $\\text{SymGF - Symbolic Green's Function}$ \n\n\n\n\n\n $Feng Zimin and Guo Hong\\backslash nPhysics, McGill$ \n\n\n\n\n\n $\\text{2012-April-15}$ \n\n\n\n\n\n $\\text{Please make sure that this is a new Mathematica session !!!}$ \n\n\n\n\n\n $\\text{Report bugs or comments to ziminf@physics.mcgill.ca or guo@physics.mcgill.ca}$ \n\n\n\n\n\n### Setting up the Hamiltonian\n\nThere are two main features of Hamiltonians in  *SymGF* . One is that all operators have a hat at their top; the other is that a sequence of operators should be concatenated with the  **NoncommutativeMultiply**  symbol <span style=\"font-weight:Bold;font-family:Courier New\">**</span>, as the order of the operators matters here. The hat should cover the whole operator even if it contains subscript.\n\nTherefore our diagonal Hamiltonian should be written in  *SymGF*  as:",
+   "languageId": "markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "H = e[k]*OverHat[adag[k]]**OverHat[a[k]];",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 1,
+   "value": "where we have defined a new variable <span style=\"font-weight:Bold;font-family:Courier New\">H</span>.  Pay attention that we have denoted the conjugation of operator  $\\pmb{\\hat{a[k]}}$ \n\n\n\n to be  $\\pmb{\\hat{\\text{adag}[k]}}$ \n\n\n\n, and that we use single square brackets to denote subscripts (here it is <span style=\"font-weight:Bold;font-family:Courier New\" class=\"item\">k</span><span class=\"singleletteritalics\">). </span>In the above Hamiltonian, for example, the hat for operator  $a_k^+$ \n\n\n\n covers <span style=\"font-weight:Bold;font-family:Courier New\">adag[k]</span> as a whole; t<span class=\"singleletteritalics\">he hat can be typed with keyboard as </span><span style=\"font-size:16px\">&#63331;</span> + 7 and then <span style=\"font-size:16px\">&#63445;</span> + 6 when the cursor is right after <span style=\"font-weight:Bold;font-family:Courier New\">adag[k]</span>.\n\n\n\nPress <span style=\"font-size:16px\">&#63445;</span> + <span style=\"font-size:16px\">&#63444;</span> to execute this cell. \n\nThe hat should cover the whole operator including, if any, the subscripts that come with the operator. Not covering the right contents will lead to serious problems!\n\nIt is crucial for you to have the right Hamiltonian, therefore you'd better double check that, especially whether the hats on the operators are covering the right contents. One way to do this is to show the full form of the Hamiltonian. For the Hamiltonian in this section, its full form can be shown as:",
+   "languageId": "markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "FullForm[H]",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 1,
+   "value": "Pressing <span style=\"font-size:16px\">&#63445;</span> + <span style=\"font-size:16px\">&#63444;</span> to execute the <span style=\"font-weight:Bold;font-family:Courier New\">FullForm[H]</span> command should give you the above list.\n\nIt is crucial for you to have the right Hamiltonian where the hats cover the right contents.\n\n\n\nHere we are assuming the subscript k is summed over. We need to tell this to  *SymGF* , otherwise it will be considered to be an independent subscript. To this end, we use command <span style=\"font-weight:Bold;font-family:Courier New\">SetSumSub[]</span> and type :",
+   "languageId": "markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "SetSumSub[{k}]",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 1,
+   "value": " $\\text{List of summation subscript: }\\{k\\}$ \n\n\n\n\n\n $\\text$ \n\n\n\n\n\nAnd then press <span style=\"font-size:16px\">&#63445; </span>+ <span style=\"font-size:16px\">&#63444;</span> to execute it. If a list {k} is shown below the <span style=\"font-weight:Bold;font-family:Courier New\">SetSumSub[]</span> command like above, then <span style=\"font-weight:Bold;font-family:Courier New\">k</span> is recognized as summation subscript throughout the whole session of  *SymGF* .\n\n### Supplying the anti-commutation rules\n\nAt this point,  *SymGF*  doesn't know how operators we used in the Hamiltonian anti-commute. Suppose the operator  $\\hat{a_k}$ \n\n\n\n has the property  $\\left\\{\\hat{a_k},\\hat{a}_{k'}^+\\right\\}=\\delta _{k k'}$ \n\n\n\n, then we should type the following <span style=\"font-weight:Bold;font-family:Courier New\">SetRules[]</span> statement into  *SymGF* :",
+   "languageId": "markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "SetRules[{{a[k_], adag[kp_], a[k_]*adag[kp_] :> DiracDelta[k - kp], 1}}]",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 1,
+   "value": " $\\text{(Anti-)Commutation relation(s): }$ \n\n\n\n\n\n $\\begin{array}{lllllll}\n\n 1 & \\text{:  $\\{$} & a[k\\_] & , & \\text{adag}[kp\\_] & \\$ =} & \\text{DiracDelta}[k-\\text{kp}] \\\\\n\n\\end{array}$ \n\n\n\n\n\n $\\text$ \n\n\n\n\n\nYou can type  $:\\to$ \n\n\n\n  as :>, i.e., a colon followed by a greater than symbol. \n\n\n\nThis is what  *SymGF*  needs to interpret the anti-commutator  $\\left\\{\\hat{a_k},\\hat{a}_{k'}^+\\right\\}=\\delta _{k k'}$ \n\n\n\n. \n\n\n\nIn the list that serves as the parameter of the <span style=\"font-weight:Bold;font-family:Courier New\">SetRule[]</span> command, i.e., <span style=\"font-weight:Bold;font-family:Courier New\">{a[k_], adag[kp_], a[k_] adag[kp_] &RuleDelayed; DiracDelta[k - kp], 1}</span>:\n\nThe first and second element, <span style=\"font-weight:Bold;font-family:Courier New\">a[k_]</span> and <span style=\"font-weight:Bold;font-family:Courier New\">adag[kp_]</span>, represents the first and second operator in the anti-commutator  $\\left\\{\\hat{a_k},\\hat{a}_{k'}^+\\right\\}=\\delta _{k k'}$ \n\n\n\n,  $\\hat{a_k}$ \n\n\n\n and  $\\hat{a}_{k'}^+$ \n\n\n\n. The underscore <span style=\"font-weight:Bold;font-family:Courier New\">_</span> after the subscripts <span style=\"font-weight:Bold;font-family:Courier New\">k</span> and <span style=\"font-weight:Bold;font-family:Courier New\">kp</span> so that they look like <span style=\"font-weight:Bold;font-family:Courier New\">k_</span> and <span style=\"font-weight:Bold;font-family:Courier New\">kp_</span>  is a  *Mathematica*  requirement. \n\nThe third element of the list, <span style=\"font-weight:Bold;font-family:Courier New\">a[k_] adag[kp_] &RuleDelayed; DiracDelta[k - kp]</span>, is a replacement expression, or in  *Mathematica* 's term, a \"Rule\". \n\nTo the left of the  symbol is one must list the operators in the order of their appearance as in the original anti-commutator  $\\left\\{\\hat{a_k},\\hat{a}_{k'}^+\\right\\}=\\delta _{k k'}$ \n\n\n\n, in this case it is  $\\hat{a_k}\\hat{a}_{k'}^+$ \n\n\n\n, namely <span style=\"font-weight:Bold;font-family:Courier New\">a[k_]adag[kp_]</span> in the list.\n\nTo the right of the  symbol is the evaluated form of the anti-commutator, in this case it is  $\\delta _{k k'}$ \n\n\n\n, or in  *Mathematica* 's notation, <span style=\"font-weight:Bold;font-family:Courier New\">DiracDelta[k-kp]</span>. \n\nThe last element \"1\" (one) in the list indicates the operator  $\\hat{a}_k$ \n\n\n\n is Fermionic.\n\nPress <span style=\"font-size:16px\">&#63445;</span> + <span style=\"font-size:16px\">&#63444;</span> to execute this. \n\nHere, since we know in advance that we are dealing with operators only, we no longer need to supply the hats on the operators, to simplify our notation. \n\nBut if you do provide the hats, errors will occur!\n\n### Deriving the equations of motion\n\nIn order to derive the Green's function  $\\ll \\hat{a}_k\\hat{a}_{k'}^+\\gg$ \n\n\n\n, you need to tell  *SymGF*  that you want to solve  $\\ll \\hat{a}_k\\hat{a}_{k'}^+\\gg$ \n\n\n\n,  by using the command <span style=\"font-weight:Bold;font-family:Courier New\">TargetGF[]</span>. You need to provide with the correct form of Green's function as the parameter to the command <span style=\"font-weight:Bold;font-family:Courier New\">TargetGF[]</span>, in the form similar to that of the Hamiltonian. In the following example, beneath the <span style=\"font-weight:Bold;font-family:Courier New\">TargetGF[]</span> command is the supposed screen output.",
+   "languageId": "markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "TargetGF[OverHat[a[k]]**OverHat[adag[k]]]",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 1,
+   "value": " $\\text{Target Green's function set as: }\\left\\{\\hat{a[\\text{i1}]},\\hat{\\text{adag}[\\text{i2}]}\\right\\}$ \n\n\n\n\n\nExecute with <span style=\"font-size:16px\">&#63445;</span> + <span style=\"font-size:16px\">&#63444;</span>.\n\n\n\nIf things are right, then it prints out what it has found to be the Green's function that we wish to solve for. Note in the above output  $\\left\\{\\hat{a[\\text{i1}]},\\hat{\\text{adag}[\\text{i2}]}\\right\\}$ \n\n\n\n, the original subscript <span style=\"font-weight:Bold;font-family:Courier New\">k</span> is replaced with  $\\text{i1}$ \n\n\n\n and <span style=\"font-family:Courier New\">i2</span>. \n\n\n\nThis is because  *SymGF*  needs each subscript in any Green's functions to be unique, so we adopted such a convention that all subscript loaded into  *SymGF*  begin with \"<span style=\"font-family:Courier New\">i</span>\" and followed by a unique number assigned to that particular subscript. \n\n\n\nIn this example the originally same subscript for both operators \"<span style=\"font-weight:Bold;font-family:Courier New\">k</span>\" is replaced with two different subscripts, if you want to force the same subscript, then you have to multiply a Dirac δ-function afterwards.\n\n\n\nIf your target Green's function is correctly set, you can then start deriving the equations of motion with command <span style=\"font-weight:Bold;font-family:Courier New\">DeriveGF[]</span>, with the Hamiltonian as its parameter. Type:",
+   "languageId": "markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "DeriveGF[H]",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 1,
+   "value": " $\\text{Deriving...}$ \n\n\n\n\n\n $1\\text{ equation(s) finished in }0.078\\text{ second(s).}$ \n\n\n\n\n\nPress <span style=\"font-size:16px\">&#63445;</span> + <span style=\"font-size:16px\">&#63444;</span> to execute it. You should then see the above output containing number of equations of motion  *SymGF*  derived and the time it took to derive them. In this example, there is a total of one equation of motion and it took  *SymGF*  <span style=\"font-family:Courier New\">0.14</span> seconds. Of course, actual time spent vary on different computers.\n\n### Showing what  *SymGF*  derived\n\nOnce the derivation of equations of motion is completed, you can then take a look at them. \n\n\n\nThe command <span style=\"font-weight:Bold;font-family:Courier New\">ResDisp[]</span> displays the whole set of equations of motion in a form containing: \n\nSerial number of current Green's function\n\nDefinition of the current Green's function\n\nThe right-hand-side of this equation of motion\n\nEach Green's functions is given a name in the form of  $\\overline{\\text{GFxx}[]}$ \n\n\n\n where <span style=\"font-family:Courier New\">xx</span> is the serial number of that Green's function and there is an overbar on the top. If a particular Green's function has some subscripts, then the subscripts will be put in the square brackets, for example  $\\overline{\\text{GF14}[\\text{i4}]}$ \n\n\n\n.\n\n<span style=\"font-family:DejaVu Sans\">If the </span><span style=\"font-style:Italic;font-family:DejaVu Sans\">Mathematica</span><span style=\"font-family:DejaVu Sans\"> session in which </span><span style=\"font-style:Italic;font-family:DejaVu Sans\">SymGF</span><span style=\"font-family:DejaVu Sans\"> runs isn't cleared, i.e., already has some definitions in it, then the serial number of the Green's functions may not be correct.</span>\n\nHere is what <span style=\"font-weight:Bold;font-family:Courier New\">ResDisp[]</span> shows after pressing <span style=\"font-size:16px\">&#63445;</span> + <span style=\"font-size:16px\">&#63444;</span>:",
+   "languageId": "markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "ResDisp[]",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 1,
+   "value": " $\\text{************* Equation(s) of motion: *************}$ \n\n\n\n\n\n $\\begin{array}{llllll}\n\n 1 & :  << & \\hat{a[\\text{i1}]} & \\hat{\\text{adag}[\\text{i2}]} & >> = & \\text{DiracDelta}[\\text{i1}-\\text{i2}] \\underline{\\text{gi1}[\\text{i2}]}\n\n\\\\\n\n\\end{array}$ \n\n\n\n\n\n $\\text$ \n\n\n\n\n\n $\\text{************* Isolated Green's Function(s): *************}$ \n\n\n\n\n\n $\\begin{array}{lll}\n\n \\underline{\\text{gi1}[\\text{i2}]} &  \\equiv   & e[\\text{i2}] \\\\\n\n\\end{array}$ \n\n\n\n\n\n<span style=\"font-family:DejaVu Sans Condensed\">Definition: </span><span style=\"font-style:Italic;font-family:DejaVu Sans Condensed\">isolated Green's functions</span><span style=\"font-family:DejaVu Sans Condensed\"> are the Green's functions corresponding to a part of the total Hamiltonian (defined in a sub-Hilbert space) without considering the coupling between this part of Hamiltonian and the rest of the total Hamiltonian nor the possible interactions in this part of Hamiltonian.</span>\n\nThe output of <span style=\"font-weight:Bold;font-family:Courier New\">ResDisp[]</span> has two parts:\n\nThe first part is the equation of motion that  *SymGF*  derived. It begins with:\n\n $\\text{************* Equation(s) of motion: *************}$ \n\n\n\n\n\nThen followed by the actual equation of motion it derived:\n\n $\\begin{array}{llllll}\n\n 1 & :  << & \\hat{a[\\text{i1}]} & \\hat{\\text{adag}[\\text{i2}]} & >> = & \\text{DiracDelta}[\\text{i1}-\\text{i2}] \\underline{\\text{gi1}[\\text{i2}]}\n\n\\\\\n\n\\end{array}$ \n\n\n\n\n\nThe leading \"1\" (one) is the serial number of the Green's function that's being derived an equation of motion. The above output of  *SymGF*  represents  $\\ll \\hat{a}_k\\hat{a}_{k'}^+\\gg =\\delta _{k k'}g(k)$ \n\n\n\n. And  $\\underline{\\text{gi1}[\\text{i2}]}$ \n\n\n\n, or in traditional form,  $g(k)$ \n\n\n\n, is an isolated Green's function defined later. \n\n\n\n *SymGF*  mark all isolated Green's functions with an underscore:  $\\underline{\\text{gi1}[\\text{i2}]}$ \n\n\n\n.\n\n\n\nEach isolated Green's functions are given a name of the form  $\\underline{\\text{gixx}[]}$ \n\n\n\n and <span style=\"font-family:Courier New\">xx</span> represents the serial number of this isolated Green's function. If subscripts are needed, then they will be put in the square brackets, just like the above example  $\\underline{\\text{gi1}[\\text{i2}]}$ \n\n\n\n.\n\n<span style=\"font-family:DejaVu Sans Condensed\">Isolated Green's functions are considered to be known, and most of the time they are derived from the diagonal form of a sub-Hamiltonian.</span>\n\nThe second part lists the definition of all the isolated Green's function used in the equations of motion. It begins with\n\n $\\text{************* Isolated Green's Function(s): *************}$ \n\n\n\n\n\nThen followed by the abbreviated form of the actual definitions of all the isolated Green's function. In this example there is only one:\n\n $\\begin{array}{lll}\n\n \\underline{\\text{gi1}[\\text{i2}]} &  \\equiv   & e[\\text{i2}] \\\\\n\n\\end{array}$ \n\n\n\n\n\nThe definition above means  $\\underline{\\text{gi1}[\\text{i2}]}=\\frac{1}{\\omega -\\epsilon [\\text{i2}]+i 0^+}$ \n\n\n\n, where <span style=\"font-family:Courier New\">&omega;</span> is the energy and  $0^+$ \n\n\n\n represents an infinitesimal positive number.  $\\underline{\\text{gi1}[\\text{i2}]}$ \n\n\n\n, like all other Green's functions, is a function of energy.\n\nAll Green's functions, whether they are isolated Green's functions or not, are functions of energy. For simplicity, energy variables are not shown.\n\nFor the simplicity of notations,  *SymGF*  omits the energy symbol \"ω\" altogether.\n\n### Summary:  $G=\\ll \\hat{a}_k\\hat{a}_{k'}^+\\gg$ \n\n\n\n and  $H=\\sum _k\\epsilon _k\\hat{a}_k^+\\hat{a}_k$ \n\n\n\n\n\nTo derive with  *SymGF*  the Green's function  $\\ll \\hat{a}_k\\hat{a}_{k'}^+\\gg$ \n\n\n\n with Hamiltonian  $\\sum _k\\epsilon _k\\hat{a}_k^+\\hat{a}_k$ \n\n\n\n, one should provide the following input:",
+   "languageId": "markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "SetDirectory[\"~/some-where/\"]; \nGet[\"SymGF.m\"]\nH = e[k]*OverHat[adag[k]]**OverHat[a[k]]; \nSetSumSub[{k}]; \nSetRules[{{a[k_], adag[kp_], a[k_]*adag[kp_] :> DiracDelta[k - kp], 1}}]; \nTargetGF[OverHat[a[k]]**OverHat[adag[k]]]\nDeriveGF[H]\nResDisp[]",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 1,
+   "value": "In this example, the equation of motion that  *SymGF*  derived:  $\\ll \\hat{a}_k\\hat{a}_{k'}^+\\gg =\\delta _{k k'}g(k)$ \n\n\n\n is already a \"solution\", i.e., we don't need any extra work to solve for the Green's function that we need:  $\\ll \\hat{a}_k\\hat{a}_{k'}^+\\gg$ \n\n\n\n. So at this step the Hamiltonian  $\\sum _k\\epsilon _k\\hat{a}_k^+\\hat{a}_k$ \n\n\n\n is solved.\n\n\n\nBy going through this example, the user should have an idea of how  *SymGF*  inputs are set up. \n\n\n\nIn the next section we move on to a more complicated situation where the equations of motion require a serious solution in order to have the desired Green's function.\n\n### Exercise\n\nSolve  $G=\\ll \\hat{a}_k\\hat{a}_{k'}^+\\gg$ \n\n\n\n for  $H=\\epsilon \\sum _k\\hat{a}_k^+\\hat{a}_k$ \n\n\n\n, i.e., diagonal Hamiltonian with degenerate energy levels. Observe how  *SymGF*  represents Green's functions without subscripts.\n\nConsider the Hamiltonian $H=\\sum _k\\epsilon _k\\hat{a}_k^+\\hat{a}_k+\\sum _k\\phi _k\\hat{b}_k^+\\hat{b}_k$ \n\n\n\n, and try to solve the Green's function  $G=\\ll \\hat{a}_k\\hat{b}_{k'}^+\\gg$ \n\n\n\n, what do you get?\n\n---\n## Solving the Hamiltonian with coupling:  $H=\\epsilon _a\\sum _{\\sigma }\\hat{a}_{\\sigma }^+\\hat{a}_{\\sigma }+\\sum _{\\alpha \\sigma } \\epsilon _{\\alpha \\sigma k}\\hat{c}_{\\alpha\n\n\\sigma k}^+\\hat{c}_{\\alpha \\sigma k}+\\left(\\sum _{\\alpha \\sigma k} t_{\\alpha k}\\hat{c}_{\\alpha \\sigma k}^+\\hat{a}_{\\sigma\n\n}+h.c.\\right)$ \n\n\n\n\n\nIn this section we try to solve the Green's function  $G=\\ll \\hat{a}_{\\sigma }\\hat{a}_{\\sigma }^+\\gg$ \n\n\n\n for the simplest non-trivial Hamiltonian, namely Hamiltonian with coupling  $H=\\epsilon _a\\sum _{\\sigma }\\hat{a}_{\\sigma }^+\\hat{a}_{\\sigma }+\\sum _{\\alpha \\sigma } \\epsilon _{\\alpha \\sigma k}\\hat{c}_{\\alpha\n\n\\sigma k}^+\\hat{c}_{\\alpha \\sigma k}+\\left(\\sum _{\\alpha \\sigma k} t_{\\alpha k}\\hat{c}_{\\alpha \\sigma k}^+\\hat{a}_{\\sigma\n\n}+h.c.\\right)$ \n\n\n\n \n\n\n\nThis Hamiltonian represents a degenerate single level quantum dot coupled to two leads. It is intuitively divided into three parts: the quantum dot, the leads, and the coupling in between. In particular,\n\nOn the quantum dot, \n\nThe operator is  $\\hat{a}_{\\sigma }$ \n\n\n\n. σ indicates the spin type (denoted by \"1\" for up and \"2\" for down)\n\nThe energy level is  $\\epsilon _a$ \n\n\n\n\n\nOn the leads,\n\nThe energy levels are  $\\epsilon _{\\alpha \\sigma k}$ \n\n\n\n. α indicates whether the lead is on the \"left\" or \"right\" (denoted by \"L\" and \"R\")\n\nThe operators are  $\\hat{c}_{\\alpha \\sigma k}$ \n\n\n\n\n\nOn the coupling between the leads and the quantum dot,\n\n  The coupling constant is  $t_{\\alpha k}$ \n\n\n\n. \n\nTo solve for the Green's function  $\\ll \\hat{a}_{\\sigma }\\hat{a}_{\\sigma }^+\\gg$ \n\n\n\n of this Hamiltonian, in addition to the kinds of inputs you have seen in the previous section, you'll need extra instructions to  *SymGF*  in order to solve the equations of motion that  *SymGF*  derived. Here we demonstrate the  *Conditioned Iteration*  method and  *Gaussian Elimination* , because they have the most general applicability. In the future, it’s likely that  *SymGF*  will abandon  *Conditioned Iteration*  and keep only  *Gaussian Elimination.* \n\n\n\nYou should note that  *Conditioned Iteration*  and  *Gaussian Elimination*  require different inputs. But since these inputs are not contradictory, you can use both of them without causing any conflicts.\n\n### Writing operators and coupling constants in  *SymGF* \n\nFor the moment the safest way of writing operators for this case is to write every operator explicitly, i.e., explicitly write down spin-up and spin-down operators and left and right lead's operators. While you are encouraged to try other representations, the example given in this section will be on the conservative side. Therefore, you can:\n\ndenote  $\\hat{a}_{\\sigma }^+$ \n\n\n\n by  $\\pmb{\\hat{\\text{a1dag}}}$ \n\n\n\n and  $\\pmb{\\hat{\\text{a2dag}}}$ \n\n\n\n;\n\ndenoted  $\\hat{a}_{\\sigma }$ \n\n\n\n by  $\\pmb{\\hat{\\text{a1}}}$ \n\n\n\n and  $\\pmb{\\hat{\\text{a2}}}$ \n\n\n\n;\n\ndenote  $\\hat{c}_{\\alpha \\sigma k}^+$ \n\n\n\n by  $\\pmb{\\hat{\\text{cL1dag}[k]}}$ \n\n\n\n,  $\\pmb{\\hat{\\text{cL2dag}[k]}}$ \n\n\n\n,  $\\pmb{\\hat{\\text{cR1dag}[k]}}$ \n\n\n\n, and  $\\pmb{\\hat{\\text{cR2dag}[k]}}$ \n\n\n\n;\n\ndenote  $\\hat{c}_{\\alpha \\sigma k}$ \n\n\n\n by  $\\pmb{\\hat{\\text{cL1}[k]}}$ \n\n\n\n,  $\\pmb{\\hat{\\text{cL2}[k]}}$ \n\n\n\n,  $\\pmb{\\hat{\\text{cR1}[k]}}$ \n\n\n\n and  $\\pmb{\\hat{\\text{cR2}[k]}}$ \n\n\n\n;\n\ndenote  $t_{\\alpha k}$ \n\n\n\n by <span style=\"font-weight:Bold;font-family:Courier New\">tL[k]</span> and <span style=\"font-weight:Bold;font-family:Courier New\">tR[k]</span>;\n\ndenote  $t_{\\alpha k}^*$ \n\n\n\n by <span style=\"font-weight:Bold;font-family:Courier New\">tLstar[k]</span> and <span style=\"font-weight:Bold;font-family:Courier New\">tRstar[k]</span>.\n\nAgain, \"L\" and \"R\" represent left and right; \"1\" (one) and \"2\" represent spin-up and spin-down, respectively.\n\n\n\nIn the future  *SymGF*  may be able to adopt a more compact form where \"L\"/\"R\" or \"1\"/\"2\" are no longer explicitly needed. Please check out the latest version of this manual for further detail.\n\n### Setting up the Hamiltonian and anti-commutation relations\n\nWe are now familiar with setting up the Hamiltonian and anti-commutation relations, so such inputs are listed here without further explanation (see  **Section**   **2: Subsections**   **1**  to  **5** ).",
+   "languageId": "markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "H = Hlr + Htld + Htrd + Hdot; \nHlr = ϵl1[k]*OverHat[cl1dag[k]]**OverHat[cl1[k]] + ϵl2[k]*OverHat[cl2dag[k]]**OverHat[cl2[k]] + ϵr1[k]*OverHat[cr1dag[k]]**OverHat[cr1[k]] + ϵr2[k]*OverHat[cr2dag[k]]**OverHat[cr2[k]]; \nHdot = ϵa*OverHat[a1dag]**OverHat[a1] + ϵa*OverHat[a2dag]**OverHat[a2]; \nHtld = tl[k]*OverHat[cl1dag[k]]**OverHat[a1] + tlstar[k]*OverHat[a1dag]**OverHat[cl1[k]] + tl[k]*OverHat[cl2dag[k]]**OverHat[a2] + tlstar[k]*OverHat[a2dag]**OverHat[cl2[k]]; \nHtrd = tr[k]*OverHat[cr1dag[k]]**OverHat[a1] + tr[k]*OverHat[cr2dag[kr2]]**OverHat[a2] + trstar[k]*OverHat[a1dag]**OverHat[cr1[k]] + trstar[k]*OverHat[a2dag]**OverHat[cr2[k]]; \nSetRules[{{cl1[k_], cl1dag[kp_], cl1[k_]*cl1dag[kp_] :> DiracDelta[k - kp], 1}, {cr1[k_], cr1dag[kp_], cr1[k_]*cr1dag[kp_] :> DiracDelta[k - kp], 1}, {cl2[k_], cl2dag[kp_], cl2[k_]*cl2dag[kp_] :> DiracDelta[k - kp], 1}, {cr2[k_], cr2dag[kp_], cr2[k_]*cr2dag[kp_] :> DiracDelta[k - kp], 1}, {a1, a1dag, 1, 1}, {a2, a2dag, 1, 1}}]\nSetSumSub[{k}]",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 1,
+   "value": " $\\text{(Anti-)Commutation relation(s): }$ \n\n\n\n\n\n $\\begin{array}{lllllll}\n\n 1 & \\text{:  $\\{$} & \\text{cl1}[k\\_] & , & \\text{cl1dag}[kp\\_] & \\$ =} & \\text{DiracDelta}[k-\\text{kp}] \\\\\n\n 2 & \\text{:  $\\{$} & \\text{cr1}[k\\_] & , & \\text{cr1dag}[kp\\_] & \\$ =} & \\text{DiracDelta}[k-\\text{kp}] \\\\\n\n 3 & \\text{:  $\\{$} & \\text{cl2}[k\\_] & , & \\text{cl2dag}[kp\\_] & \\$ =} & \\text{DiracDelta}[k-\\text{kp}] \\\\\n\n 4 & \\text{:  $\\{$} & \\text{cr2}[k\\_] & , & \\text{cr2dag}[kp\\_] & \\$ =} & \\text{DiracDelta}[k-\\text{kp}] \\\\\n\n 5 & \\text{:  $\\{$} & \\text{a1} & , & \\text{a1dag} & \\$ =} & 1 \\\\\n\n 6 & \\text{:  $\\{$} & \\text{a2} & , & \\text{a2dag} & \\$ =} & 1 \\\\\n\n\\end{array}$ \n\n\n\n\n\n $\\text$ \n\n\n\n\n\n $\\text{List of summation subscript: }\\{k\\}$ \n\n\n\n\n\n $\\text$ \n\n\n\n\n\nPlease note that the anti-commutators for operators without subscripts, here  $\\left\\{\\hat{a}_{\\uparrow },\\hat{a}_{\\uparrow }^+\\right\\}=1$ \n\n\n\n and  $\\left\\{\\hat{a}_{\\downarrow },\\hat{a}_{\\downarrow }^+\\right\\}=1$ \n\n\n\n,  *SymGF*  only needs their evaluated form of the original anti-commutator, i.e., \"1\", to be the third element in the list that represents this anti-commutator, like what's shown above in the <span style=\"font-weight:Bold;font-family:Courier New\">SetRules[]</span> command:",
+   "languageId": "markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "Cell[BoxData[RowBox[{RowBox[{\"SetRules\", \"[\", \" \", RowBox[{\"{\", \"                   \", RowBox[{\"(*\", \" \", RowBox[{RowBox[{\"Information\", \" \", \"only\"}], \",\", \" \", RowBox[{\"not\", \" \", RowBox[{RowBox[{\"executable\", \" \", \"!!\"}], \"!\"}]}]}], \" \", \"*)\"}], \"ï£\", RowBox[{RowBox[{\"...\", \"...\"}], \",\", \"ï£\", RowBox[{\"{\", RowBox[{\"a1\", \",\", \"a1dag\", \",\", \"1\", \",\", \"1\"}], \"}\"}], \",\", \"  \", RowBox[{\"(*\", \" \", RowBox[{\"<\", RowBox[{\"-=\", \" \", RowBox[{\"These\", \" \", \"two\", \" \", \"lines\", \" \", \"have\", \" \", \"a\", \" \", \"different\", \" \", RowBox[{\"form\", \".\"}]}]}]}], \" \", \"*)\"}], \"ï£\", RowBox[{\"{\", RowBox[{\"a2\", \",\", \"a2dag\", \",\", \"1\", \",\", \"1\"}], \"}\"}]}], \"ï£\", \"}\"}], \" \", \"]\"}], \" \"}]], \"Input\"]",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 1,
+   "value": "In  *SymGF* , the representation of anti-commutators depends on whether the involved operators have subscripts. If they don't, then the third element of the list is just the evaluated form and not a replacement \"Rule\".\n\nIn this example, the full Hamiltonian <span style=\"font-weight:Bold;font-family:Courier New\">H</span> is defined with some intermediate variables <span style=\"font-weight:Bold;font-family:Courier New\">Hlr</span> (sub-Hamiltonian for the leads), <span style=\"font-weight:Bold;font-family:Courier New\">Htld</span> and <span style=\"font-weight:Bold;font-family:Courier New\">Htrd</span> (sub-Hamiltonian for quantum dot and left/right lead coupling), and <span style=\"font-weight:Bold;font-family:Courier New\">Hdot</span> (sub-Hamiltonian for the quantum dot).\n\nAgain, we emphasize  *SymGF*  is supposed to run in a clear Mathematica session and hats should cover the right contents.\n\n### Deriving the equations of motion\n\nTo derive an equation of motion, temporal derivative has to be taken on one of the time variable of the Green's function being derived. You can find the details in Feng's PhD thesis (stated in the preamble). \n\n\n\nIn principle, <span style=\"font-weight:Bold;font-family:Courier New\">TargetGF[]</span> and <span style=\"font-weight:Bold;font-family:Courier New\">DeriveGF[]</span> described in the previous section (Solving diagonal Hamiltonian) will suffice. But in  *SymGF* , you can mandate which operator(s) to keep during the derivation of equations of motion, so that the equations of motion will have the simpler form. You can do it with the command <span style=\"font-weight:Bold;font-family:Courier New\">SetPreserve[]</span> to provide a list of preferred operator(s).",
+   "languageId": "markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "SetPreserve[{OverHat[a1], OverHat[a1dag], OverHat[a2], OverHat[a2dag]}]",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 1,
+   "value": " $\\text{Operators to preserve: }\\left\\{\\hat{\\text{a1}},\\hat{\\text{a1dag}},\\hat{\\text{a2}},\\hat{\\text{a2dag}}\\right\\}$ \n\n\n\n\n\n $\\text$ \n\n\n\n\n\nExecuting it by pressing <span style=\"font-size:16px\">&#63445;</span> + <span style=\"font-size:16px\">&#63444;</span>,  *SymGF*  then preserves the operators  $\\pmb{\\hat{\\text{a1}}}$ \n\n\n\n,  $\\hat{\\text{a1dag}}$ \n\n\n\n ,  $\\pmb{\\hat{\\text{a2}}}$ \n\n\n\n and  $\\hat{\\text{a2dag}}$ \n\n\n\n when deriving the equations of motion of the Green's functions containing these operators, unless they are contained in both times.\n\nStill, you need to tell  *SymGF*  which Green's function you would like to have with the <span style=\"font-weight:Bold;font-family:Courier New\">TargetGF[]</span> command:",
+   "languageId": "markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "TargetGF[OverHat[a1]**OverHat[a1dag]]",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 1,
+   "value": " $\\text{Target Green's function set as: }\\left\\{\\hat{\\text{a1}},\\hat{\\text{a1dag}}\\right\\}$ \n\n\n\n\n\nHere we take  $\\ll \\hat{a}_{\\uparrow }\\hat{a}_{\\uparrow }^+\\gg$ \n\n\n\n for example. If you want to derive  $\\ll \\hat{a}_{\\downarrow }\\hat{a}_{\\downarrow }^+\\gg$ \n\n\n\n,  $\\ll \\hat{a}_{\\uparrow }\\hat{a}_{\\downarrow }^+\\gg$ \n\n\n\n or  $\\ll \\hat{a}_{\\downarrow }\\hat{a}_{\\uparrow }^+\\gg$ \n\n\n\n, you need to start over from loading  *SymGF*  package.\n\nAlways restart from loading  *SymGF*  package if you need to derive another Green's function.\n\n<span style=\"font-weight:Bold;font-family:Courier New\">TargetGF[]</span> can be executed before or after <span style=\"font-weight:Bold;font-family:Courier New\">SetPreserve[]</span>. But both of them should be executed before <span style=\"font-weight:Bold;font-family:Courier New\">DeriveGF[]</span>.\n\n\n\nNow execute <span style=\"font-weight:Bold;font-family:Courier New\">DeriveGF[]</span> to get the equations of motion:",
+   "languageId": "markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "DeriveGF[H]",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 1,
+   "value": " $\\text{Deriving...}$ \n\n\n\n\n\n $3\\text{ equation(s) finished in }0.297\\text{ second(s).}$ \n\n\n\n\n\nAnd take a look at what  *SymGF*  has derived with <span style=\"font-weight:Bold;font-family:Courier New\">ResDisp[]</span>:",
+   "languageId": "markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "ResDisp[]",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 1,
+   "value": " $\\text{************* Equation(s) of motion: *************}$ \n\n\n\n\n\n $\\begin{array}{llllll}\n\n 1 & :  << & \\hat{\\text{a1}} & \\hat{\\text{a1dag}} & >> = & \\underline{\\text{gi1}[]}+\\overline{\\text{GF2}[\\text{j1}]} \\text{tlstar}[\\text{j1}]\n\n\\underline{\\text{gi1}[]}+\\overline{\\text{GF3}[\\text{j2}]} \\text{trstar}[\\text{j2}] \\underline{\\text{gi1}[]} \\\\\n\n 2 & :  << & \\hat{\\text{cl1}[\\text{i1}]} & \\hat{\\text{a1dag}} & >> = & \\overline{\\text{GF1}[]} \\text{tl}[\\text{i1}] \\underline{\\text{gi2}[\\text{i1}]}\n\n\\\\\n\n 3 & :  << & \\hat{\\text{cr1}[\\text{i2}]} & \\hat{\\text{a1dag}} & >> = & \\overline{\\text{GF1}[]} \\text{tr}[\\text{i2}] \\underline{\\text{gi3}[\\text{i2}]}\n\n\\\\\n\n\\end{array}$ \n\n\n\n\n\n $\\text$ \n\n\n\n\n\n $\\text{************* Isolated Green's Function(s): *************}$ \n\n\n\n\n\n $\\begin{array}{lll}\n\n \\underline{\\text{gi1}[]} &  \\equiv   & \\epsilon a \\\\\n\n \\underline{\\text{gi2}[\\text{i1}]} &  \\equiv   & \\epsilon l1[\\text{i1}] \\\\\n\n \\underline{\\text{gi3}[\\text{i2}]} &  \\equiv   & \\epsilon r1[\\text{i2}] \\\\\n\n\\end{array}$ \n\n\n\n\n\nAgain, each Green's functions is given a name in the form of  $\\overline{\\text{GFxx}[]}$ \n\n\n\n where <span style=\"font-family:Courier New\">xx</span> is the serial number of that Green's function and there is an overbar on the top. For example, \n\n $\\overline{\\text{GF1}[]}$ \n\n\n\n represents our \"target\" Green's function  $\\ll \\hat{a}_{\\uparrow }\\hat{a}_{\\uparrow }^+\\gg$ \n\n\n\n. In the output  $\\overline{\\text{GF1}[]}$ \n\n\n\n ( $\\ll \\hat{a}_{\\uparrow }\\hat{a}_{\\uparrow }^+\\gg$ \n\n\n\n) is represented as  $\\begin{array}{llll}\n\n << & \\hat{\\text{a1}} & \\hat{\\text{a1dag}} & >> \\\\\n\n\\end{array}$ \n\n\n\n. Its equation of motion is at the first line.\n\n $\\overline{\\text{GF2}[\\text{j1}]}$ \n\n\n\n represents the second Green's function  *SymGF*  has derived,  $\\ll \\hat{c}_{\\text{Lk}\\uparrow }\\hat{a}_{\\uparrow }^+\\gg$ \n\n\n\n. In the output it is represented as  $\\begin{array}{llll}\n\n << & \\hat{\\text{cl1}[\\text{i1}]} & \\hat{\\text{a1dag}} & >> \\\\\n\n\\end{array}$ \n\n\n\n. Its equation of motion is at the second line. Please note that the summation subscript has been changed into a more explicit form to  *SymGF*  that begins with \"<span style=\"font-family:Courier New\">j</span>\" and is followed by a number to identify it.\n\n *SymGF*  renames summation subscripts so that all summation subscripts internal to  *SymGF*  begins with \"<span style=\"font-family:Courier New\">j</span>\".\n\n### Solving the equations of motion with Conditioned Iteration method\n\n(Original idea: Dr. Sun Qing-Feng, Institute of Physics, Beijing)\n\nThis subsection demonstrates how you can solve the equations of motion obtained above with Conditioned Iteration method. If you are only interested in solving equations of motion with Gaussian elimination, please feel safe to skip this whole subsection altogether.\n\n\n\nIn order to solve the equations of motion you should group the coupling constants in a way that the coupling constants and their conjugation are distinguished and that different types of couplings are distinguished ( *different types of couplings*  will be covered in subsequent sections). This is done with the command <span style=\"font-weight:Bold;font-family:Courier New\">SetCoupling[]</span> with the nested list of coupling constants as the parameter:",
+   "languageId": "markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "SetCoupling[{{{tl[k], tr[k]}, {tlstar[k], trstar[k]}}}]",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 1,
+   "value": " $\\text{Grouped coupling constants:}$ \n\n\n\n\n\n $\\begin{array}{ll}\n\n \n\n\\begin{array}{l}\n\n \\text{tl}[k] \\\\\n\n \\text{tr}[k] \\\\\n\n\\end{array}\n\n & \n\n\\begin{array}{l}\n\n \\text{tlstar}[k] \\\\\n\n \\text{trstar}[k] \\\\\n\n\\end{array}\n\n \\\\\n\n\\end{array}$ \n\n\n\n\n\n $\\text$ \n\n\n\n\n\nExecute it by pressing <span style=\"font-size:16px\">&#63445;</span> + <span style=\"font-size:16px\">&#63444;.</span>\n\nPay attention how many curly brackets are used here. If we only consider one lead, so that there is only <span style=\"font-weight:Bold;font-family:Courier New\">t[k]</span> instead of <span style=\"font-weight:Bold;font-family:Courier New\">tl[k]</span> and <span style=\"font-weight:Bold;font-family:Courier New\">tr[k]</span>, we will still have to keep all the curly brackets here.\n\nNow, you are ready to evoke the Conditioned Iteration method by the command <span style=\"font-weight:Bold;font-family:Courier New\">CondIter.</span>",
+   "languageId": "markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "CondIter[]",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 1,
+   "value": " $\\text{Doing }1\\text{ from }\\{1\\}$ \n\n\n\n\n\n $\\text{Temp: }\\underline{\\text{gi1}[]}\\text{ has no GF.}$ \n\n\n\n\n\n $\\text{finally }\\left\\{\\overline{\\text{GF1}[]}==\\underline{\\text{gi1}[]}+\\overline{\\text{GF1}[]} \\tilde{\\Sigma 1\\left[\\overset{\\rightharpoonup\n\n}{\\text{j1}}\\right]} \\underline{\\text{gi1}[]}+\\overline{\\text{GF1}[]} \\tilde{\\Sigma 2\\left[\\overset{\\rightharpoonup }{\\text{j2}}\\right]}\n\n\\underline{\\text{gi1}[]}\\right\\}\\text{ with }\\left\\{\\overline{\\text{GF1}[]}\\right\\}$ \n\n\n\n\n\n $\\text{Finished in }0.\\text{ seconds.}$ \n\n\n\n\n\nThe output of <span style=\"font-weight:Bold;font-family:Courier New\">CondIter</span> is the reduced linear equation(s) whose variables are just numbers, so that they are easily solved with established methods. In our case there is only one such equation , namely,  $\\overline{\\text{GF1}[]}==\\underline{\\text{gi1}[]}+\\overline{\\text{GF1}[]} \\tilde{\\Sigma 1\\left[\\overset{\\rightharpoonup }{\\text{j1}}\\right]}\n\n\\underline{\\text{gi1}[]}+\\overline{\\text{GF1}[]} \\tilde{\\Sigma 2\\left[\\overset{\\rightharpoonup }{\\text{j2}}\\right]} \\underline{\\text{gi1}[]}$ \n\n\n\n.\n\n\n\nThe final result of CondIter[] is the equation(s) whose unknowns are just numbers.\n\nThe symbols with over tilde like  $\\tilde{\\Sigma 1\\left[\\overset{\\rightharpoonup }{\\text{j1}}\\right]}$ \n\n\n\n are self-energies.\n\n\n\nTo see what these self-energies are, use again <span style=\"font-weight:Bold;font-family:Courier New\">ResDisp[]</span>:",
+   "languageId": "markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "ResDisp[]",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 1,
+   "value": " $\\text{************* Equation(s) of motion: *************}$ \n\n\n\n\n\n $\\begin{array}{llllll}\n\n 1 & :  << & \\hat{\\text{a1}} & \\hat{\\text{a1dag}} & >> = & \\underline{\\text{gi1}[]}+\\overline{\\text{GF2}[\\text{j1}]} \\text{tlstar}[\\text{j1}]\n\n\\underline{\\text{gi1}[]}+\\overline{\\text{GF3}[\\text{j2}]} \\text{trstar}[\\text{j2}] \\underline{\\text{gi1}[]} \\\\\n\n 2 & :  << & \\hat{\\text{cl1}[\\text{i1}]} & \\hat{\\text{a1dag}} & >> = & \\overline{\\text{GF1}[]} \\text{tl}[\\text{i1}] \\underline{\\text{gi2}[\\text{i1}]}\n\n\\\\\n\n 3 & :  << & \\hat{\\text{cr1}[\\text{i2}]} & \\hat{\\text{a1dag}} & >> = & \\overline{\\text{GF1}[]} \\text{tr}[\\text{i2}] \\underline{\\text{gi3}[\\text{i2}]}\n\n\\\\\n\n\\end{array}$ \n\n\n\n\n\n $\\text$ \n\n\n\n\n\n $\\text{************* Isolated Green's Function(s): *************}$ \n\n\n\n\n\n $\\begin{array}{lll}\n\n \\underline{\\text{gi1}[]} &  \\equiv   & \\epsilon a \\\\\n\n \\underline{\\text{gi2}[\\text{i1}]} &  \\equiv   & \\epsilon l1[\\text{i1}] \\\\\n\n \\underline{\\text{gi3}[\\text{i2}]} &  \\equiv   & \\epsilon r1[\\text{i2}] \\\\\n\n\\end{array}$ \n\n\n\n\n\n $\\text{************ Self-Energy(ies): ************ }$ \n\n\n\n\n\n $\\begin{array}{lll}\n\n \\tilde{\\Sigma 1\\left[\\overset{\\rightharpoonup }{\\text{j1}}\\right]} &  \\equiv   & \\text{tl}[\\text{j1}] \\text{tlstar}[\\text{j1}]\n\n\\underline{\\text{gi2}[\\text{j1}]} \\\\\n\n \\tilde{\\Sigma 2\\left[\\overset{\\rightharpoonup }{\\text{j2}}\\right]} &  \\equiv   & \\text{tr}[\\text{j2}] \\text{trstar}[\\text{j2}]\n\n\\underline{\\text{gi3}[\\text{j2}]} \\\\\n\n\\end{array}$ \n\n\n\n\n\nWe then see the definition of self-energies show up at the end of the output of <span style=\"font-weight:Bold;font-family:Courier New\">ResDisp[]</span>. \n\n $\\text{************ Self-Energy(ies): ************ }$ \n\n\n\n\n\n $\\begin{array}{lll}\n\n \\tilde{\\Sigma 1\\left[\\overset{\\rightharpoonup }{\\text{j1}}\\right]} &  \\equiv   & \\text{tl}[\\text{j1}] \\text{tlstar}[\\text{j1}]\n\n\\underline{\\text{gi2}[\\text{j1}]} \\\\\n\n \\tilde{\\Sigma 2\\left[\\overset{\\rightharpoonup }{\\text{j2}}\\right]} &  \\equiv   & \\text{tr}[\\text{j2}] \\text{trstar}[\\text{j2}]\n\n\\underline{\\text{gi3}[\\text{j2}]} \\\\\n\n\\end{array}$ \n\n\n\n\n\nQuite intuitively you should know there is a summation implied in the definitions:  $\\tilde{\\Sigma 1\\left[\\overset{\\rightharpoonup }{\\text{j1}}\\right]}=\\sum _{\\text{j1}}\\text{tl}[\\text{j1}] \\text{tlstar}[\\text{j1}] \\underline{\\text{gi2}[\\text{j1}]}$ \n\n\n\n; and similarly for  $\\tilde{\\Sigma 2\\left[\\overset{\\rightharpoonup }{\\text{j2}}\\right]}$ \n\n\n\n.\n\nThese self-energies are just numbers. But here they are supported with the summation subscripts coming from their definition, except an over arrow on the subscripts indicates that they are not real subscripts. This is necessary because in Conditioned Iteration need to keep track of these subscripts to recognize properly the mostly rather complicated self-energies that may appear during the solution of the equations of motion.\n\n### Solving the equations of motion with Gaussian Elimination\n\nThis subsection demonstrates how you can solve the equations of motion with Gaussian elimination. You need to repeat subsections 1-4 of this section in order to proceed.\n\n\n\nSuppose you have derived the equations of motion, then you are ready to use Gaussian elimination to solve them. To this end, you need to:\n\nCreate a matrix corresponding to the equations of motion with <span style=\"font-weight:Bold;font-family:Courier New\">CreateMat[]</span>; and\n\nEvoke <span style=\"font-weight:Bold;font-family:Courier New\">GaussElim[]</span> to do the actual solving.\n\nCreating the matrix is quite simple. You just need to type:",
+   "languageId": "markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "CreateMat[]; ",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 1,
+   "value": " $\\text{Matrix established.}$ \n\n\n\n\n\nExecute it by pressing  <span style=\"font-size:16px\">&#63445;</span> + <span style=\"font-size:16px\">&#63444;</span>. If you see\n\n $\\text{Matrix established.}$ \n\n\n\n\n\nit means the matrix is established successfully. \n\n\n\nSince <span style=\"font-weight:Bold;font-family:Courier New\">CreateMat[]</span> returns the matrix, it is recommended that you put a semi-colon \";\" at the end to suppress the output, like shown here.\n\n\n\nUsually you may not want to see what the matrix is like, but if you do, you can type:",
+   "languageId": "markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "m = CreateMat[]; ",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 1,
+   "value": " $\\text{Matrix established.}$ \n\n\n\n\n\nThis stores the matrix into the variable m. Then you can take a look at it by typing:",
+   "languageId": "markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "MatrixForm[m[[All,All,1]]]",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 1,
+   "value": "Then  *SymGF*  shows you the matrix in a compact form. The meaning of each type of block is:\n\n\"<span style=\"font-family:Courier New\">I</span>\" means this block is the identity matrix;\n\n\"<span style=\"font-family:Courier New\">c</span>\" means this block is a non-zero matrix;\n\n\"<span style=\"font-family:Courier New\">Ic</span>\" means the actual content of this block should be added to an identity matrix on top of what is stored in it. This is an efficient way of storing this kind of block matrices.\n\nPay special attention to the symbols indicating the type of block. You must add an identity matrix to the blocks with symbol \"<span style=\"font-family:Courier New\">Ic</span>\".\n\nOnce you have the matrix established, you can solve it by typing:",
+   "languageId": "markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "res = GaussElim[]; ",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 1,
+   "value": " $\\text{Gaussian Elimination of }3\\text{x}4 matrix.\\backslash nDoing row:$ \n\n\n\n\n\n $\\text{Finished in }0.\\text{ seconds.}$ \n\n\n\n\n\nHere you must store the resulting matrix to a variable of your own choice, as the results have to be read from it. In the example above, we chose the variable <span style=\"font-weight:Bold;font-family:Courier New\">res</span>. Now if you take a look at what the resulting matrix looks like, it would be:",
+   "languageId": "markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "MatrixForm[res[[All,All,1]]]",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 1,
+   "value": "In this form, it shows the Green's function we are solving for is the inverse of the block at position (1,1) multiplied by the block at position (1,4). Hence the final result is:",
+   "languageId": "markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "res[[1,4,4,1,3,1]]/(1 + res[[1,1,4,1,3,1]])",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 1,
+   "value": "Pay attention you need to add a \"1\" (one) in the denominator !\n\nWhy you need to add a \"1\" (one) in the denominator?\n\nThe meaning of the subscripts of matrix <span style=\"font-weight:Bold;font-family:Courier New\">res</span> is explained here: suppose the subscripts is <span style=\"font-weight:Bold;font-family:Courier New\">res[[x,y,4,1,3,1]]</span>, then:\n\n<span style=\"font-weight:Bold;font-family:Courier New\">x</span> and <span style=\"font-weight:Bold;font-family:Courier New\">y</span> represents the row and column of <span style=\"font-weight:Bold;font-family:Courier New\">res</span>, respectively;\n\nThe following <span style=\"font-weight:Bold;font-family:Courier New\">4,1,3,1</span> is required for Green's functions that do not have a subscript, like in this example.\n\n *SymGF*  has produced the result\n\nWe can see there are new self-energies in the above expression. To see the definition of them, we need to use the <span style=\"font-weight:Bold;font-family:Courier New\">ResDisp[]</span> command again:",
+   "languageId": "markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "ResDisp[]",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 1,
+   "value": " $\\text{************* Equation(s) of motion: *************}$ \n\n\n\n\n\n $\\begin{array}{llllll}\n\n 1 & :  << & \\hat{\\text{a1}} & \\hat{\\text{a1dag}} & >> = & \\underline{\\text{gi1}[]}+\\overline{\\text{GF2}[\\text{j1}]} \\text{tlstar}[\\text{j1}]\n\n\\underline{\\text{gi1}[]}+\\overline{\\text{GF3}[\\text{j2}]} \\text{trstar}[\\text{j2}] \\underline{\\text{gi1}[]} \\\\\n\n 2 & :  << & \\hat{\\text{cl1}[\\text{i1}]} & \\hat{\\text{a1dag}} & >> = & \\overline{\\text{GF1}[]} \\text{tl}[\\text{i1}] \\underline{\\text{gi2}[\\text{i1}]}\n\n\\\\\n\n 3 & :  << & \\hat{\\text{cr1}[\\text{i2}]} & \\hat{\\text{a1dag}} & >> = & \\overline{\\text{GF1}[]} \\text{tr}[\\text{i2}] \\underline{\\text{gi3}[\\text{i2}]}\n\n\\\\\n\n\\end{array}$ \n\n\n\n\n\n $\\text$ \n\n\n\n\n\n $\\text{************* Isolated Green's Function(s): *************}$ \n\n\n\n\n\n $\\begin{array}{lll}\n\n \\underline{\\text{gi1}[]} &  \\equiv   & \\epsilon a \\\\\n\n \\underline{\\text{gi2}[\\text{i1}]} &  \\equiv   & \\epsilon l1[\\text{i1}] \\\\\n\n \\underline{\\text{gi3}[\\text{i2}]} &  \\equiv   & \\epsilon r1[\\text{i2}] \\\\\n\n\\end{array}$ \n\n\n\n\n\n $\\text{************ Self-Energy(ies): ************ }$ \n\n\n\n\n\n $\\begin{array}{lll}\n\n \\tilde{\\Sigma 1\\left[\\overset{\\rightharpoonup }{\\text{j1}}\\right]} &  \\equiv   & \\text{tl}[\\text{j1}] \\text{tlstar}[\\text{j1}]\n\n\\underline{\\text{gi2}[\\text{j1}]} \\\\\n\n \\tilde{\\Sigma 2\\left[\\overset{\\rightharpoonup }{\\text{j2}}\\right]} &  \\equiv   & \\text{tr}[\\text{j2}] \\text{trstar}[\\text{j2}]\n\n\\underline{\\text{gi3}[\\text{j2}]} \\\\\n\n\\end{array}$ \n\n\n\n\n\n $\\begin{array}{lll}\n\n \\Gamma 1 &  \\equiv   & \\text{tr}[\\text{s1}[1]] \\text{trstar}[\\text{s1}[1]] \\underline{\\text{gi3}[\\text{s1}[1]]} \\\\\n\n \\Gamma 2 &  \\equiv   & \\text{tl}[\\text{s1}[1]] \\text{tlstar}[\\text{s1}[1]] \\underline{\\text{gi2}[\\text{s1}[1]]} \\\\\n\n\\end{array}$ \n\n\n\n\n\nThe output of <span style=\"font-weight:Bold;font-family:Courier New\">ResDisp[]</span> has now two more lines than you have seen before the equations of motion are solved:\n\n $\\begin{array}{lll}\n\n \\Gamma 1 &  \\equiv   & \\text{tr}[\\text{s1}[1]] \\text{trstar}[\\text{s1}[1]] \\underline{\\text{gi3}[\\text{s1}[1]]} \\\\\n\n \\Gamma 2 &  \\equiv   & \\text{tl}[\\text{s1}[1]] \\text{tlstar}[\\text{s1}[1]] \\underline{\\text{gi2}[\\text{s1}[1]]} \\\\\n\n\\end{array}$ \n\n\n\n\n\nThese two lines defines the two self-energies appeared in the final result. For example, the first one means  $\\Gamma 1=\\sum _k\\text{tr}[k] \\text{trstar}[k] \\underline{\\text{gi3}[k]}$ \n\n\n\n. The subscript <span style=\"font-family:Courier New\">s1[1]</span> is assumed to be summed over. If there are more than one summation scripts, then it will be <span style=\"font-family:Courier New\">s1[2]</span>, <span style=\"font-family:Courier New\">s1[3]</span>, ..., so on.\n\n### Summary\n\nTo solve  $G=\\ll \\hat{a}_{\\sigma }\\hat{a}_{\\sigma }^+\\gg$ \n\n\n\n for  $H=\\epsilon _a\\sum _{\\sigma }\\hat{a}_{\\sigma }^+\\hat{a}_{\\sigma }+\\sum _{\\alpha \\sigma } \\epsilon _{\\alpha \\sigma k}\\hat{c}_{\\alpha\n\n\\sigma k}^+\\hat{c}_{\\alpha \\sigma k}+\\left(\\sum _{\\alpha \\sigma k} t_{\\alpha k}\\hat{c}_{\\alpha \\sigma k}^+\\hat{a}_{\\sigma\n\n}+h.c.\\right)$ \n\n\n\n, you need to have the following inputs:",
+   "languageId": "markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "H = Hlr + Htld + Htrd + Hdot; \nHlr = ϵl1[k]*OverHat[cl1dag[k]]**OverHat[cl1[k]] + ϵl2[k]*OverHat[cl2dag[k]]**OverHat[cl2[k]] + ϵr1[k]*OverHat[cr1dag[k]]**OverHat[cr1[k]] + ϵr2[k]*OverHat[cr2dag[k]]**OverHat[cr2[k]]; \nHdot = ϵa*OverHat[a1dag]**OverHat[a1] + ϵa*OverHat[a2dag]**OverHat[a2]; \nHtld = tl[k]*OverHat[cl1dag[k]]**OverHat[a1] + tlstar[k]*OverHat[a1dag]**OverHat[cl1[k]] + tl[k]*OverHat[cl2dag[k]]**OverHat[a2] + tlstar[k]*OverHat[a2dag]**OverHat[cl2[k]]; \nHtrd = tr[k]*OverHat[cr1dag[k]]**OverHat[a1] + tr[k]*OverHat[cr2dag[kr2]]**OverHat[a2] + trstar[k]*OverHat[a1dag]**OverHat[cr1[k]] + trstar[k]*OverHat[a2dag]**OverHat[cr2[k]]; \nSetRules[{{cl1[k_], cl1dag[kp_], cl1[k_]*cl1dag[kp_] :> DiracDelta[k - kp], 1}, {cr1[k_], cr1dag[kp_], cr1[k_]*cr1dag[kp_] :> DiracDelta[k - kp], 1}, {cl2[k_], cl2dag[kp_], cl2[k_]*cl2dag[kp_] :> DiracDelta[k - kp], 1}, {cr2[k_], cr2dag[kp_], cr2[k_]*cr2dag[kp_] :> DiracDelta[k - kp], 1}, {a1, a1dag, 1, 1}, {a2, a2dag, 1, 1}}]\nSetSumSub[{k}]\nSetPreserve[{OverHat[a1], OverHat[a1dag], OverHat[a2], OverHat[a2dag]}]\nTargetGF[OverHat[a1]**OverHat[a1dag]]\nDeriveGF[H]",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 1,
+   "value": "At this point, you can choose to solve the equations of motion with Conditioned Iteration method like:",
+   "languageId": "markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "SetCoupling[{{{tl[k], tr[k]}, {tlstar[k], trstar[k]}}}]\nCOndIter[]",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 1,
+   "value": "Or, you can solve them with Gaussian elimination, like:",
+   "languageId": "markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "CreateMat[]; \nres = GaussElim[]; ",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 1,
+   "value": "Pay attention that for the second line, a user-specified variable is needed to store the results.\n\n### Exercises\n\nThe example presented in this section solved  $\\ll \\hat{a}_{\\uparrow }\\hat{a}_{\\uparrow }^+\\gg$ \n\n\n\n, try solve the one of the other spin-typed Green's function of the same kind, i.e.,   $\\ll \\hat{a}_{\\downarrow }\\hat{a}_{\\downarrow }^+\\gg$ \n\n\n\n,  $\\ll \\hat{a}_{\\uparrow }\\hat{a}_{\\downarrow }^+\\gg$ \n\n\n\n or  $\\ll \\hat{a}_{\\downarrow }\\hat{a}_{\\uparrow }^+\\gg$ \n\n\n\n.\n\nThe example you had in this section takes into account the spin degree of freedom. Is it necessary? Solve the same model without considering the spin.\n\nAdd and subtract one lead from the Hamiltonian with coupling presented in this section, and observe how the final Green's functions change.\n\nAdd another single-level quantum dot which is also coupled to the leads as well as the first quantum dot, solve the Green's functions of both quantum dots. If the second quantum dot does not couple to the first quantum dot, how different is the resulting Hamiltonian from one quantum dot with two energy levels? How many Green's functions you need to solve for this Hamiltonian?",
+   "languageId": "markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  }
+ ],
+ "metadata": {
+  "language_info": {
+   "name": "wolfram",
+   "codemirror_mode": "mathematica",
+   "pygments_lexer": "wolfram",
+   "mimetype": "application/vnd.wolfram.mathematica"
+  }
+ }
+}
